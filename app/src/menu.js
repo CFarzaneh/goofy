@@ -8,6 +8,7 @@ const defaultMenu = require('electron-default-menu');
 
 const env = require('./config/env.js');
 const constants = require('./helpers/constants');
+const fs = require('fs');
 
 let preferencesWindow = null;
 
@@ -88,6 +89,24 @@ function setupMenu(webContents) {
 				accelerator: 'CmdOrCtrl+N',
 				click() {
 					webContents.send(constants.NEW_CONVERSATION);
+				},
+			},
+			{
+				label: 'Dark Mode',
+				accelerator: 'CmdOrCtrl+D',
+				type: 'checkbox',
+				checked: false,
+				click() {
+					console.log(menu[1].submenu[1].checked);
+					if (!(menu[1].submenu[1].checked)) {
+						webContents.insertCSS(fs.readFileSync(path.join(__dirname, '/assets/nightmode.css'), 'utf8'));
+						menu[1].submenu[1].checked = true;
+					}
+					else {
+						//webContents.executeJavaScript('document.styleSheets[6].disabled = !document.styleSheets[6].disabled;');
+						webContents.reload()
+						menu[1].submenu[1].checked = false;
+					}
 				},
 			},
 		],
